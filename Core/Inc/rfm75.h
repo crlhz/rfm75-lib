@@ -1,6 +1,7 @@
   /*
   ******************************************************************************
   *
+  *		File:	rfm75.h
   *		Name:	STM32 library for GFSK transceiver - RFM75-S
   *	  Author:	crlhz
   *	  	Date: 	2023-04-08
@@ -13,6 +14,10 @@
 
 #ifndef INC_RFM75_H_
 #define INC_RFM75_H_
+
+#include <stdint.h>
+#include "spi.h"
+#include "gpio.h"
 
 //***SPI COMMANDS***//
 #define CMD_R_REGISTER			0b00000000
@@ -74,10 +79,14 @@
 //********************//
 
 
+//module initialization
+void rfm_init();
 
+//transmit data
+void rfm_transmit(uint8_t* data);
 
-
-
+//receive data
+uint8_t* rfm_receive(uint8_t size);
 
 
 
