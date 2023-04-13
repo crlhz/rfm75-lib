@@ -83,7 +83,7 @@
 void rfm_init();
 
 //transmit data
-void rfm_transmit(uint8_t* data);
+void rfm_transmit(uint8_t* data, uint8_t size);
 
 //receive data
 uint8_t* rfm_receive(uint8_t size);
