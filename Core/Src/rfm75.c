@@ -14,13 +14,17 @@
 
 #include "rfm75.h"
 
+static SPI_HandleTypeDef *hspi_rfm;
+
+
 //***PRIVATE FUNCION DECLARATIONS***//
-uint8_t* spi_transaction(uint8_t cmd, uint8_t* data, uint8_t size);
+static uint8_t* spi_transaction(uint8_t cmd, uint8_t* data, uint8_t size);
 //**********************************//
 
 
 //***PUBLIC FUNCTIONS***//
-void rfm_init(){
+void rfm_init(SPI_HandleTypeDef *hspi){
+	hspi_rfm = hspi;
 	uint8_t x = 0x03;
 	HAL_GPIO_WritePin(SPI2_NSS_GPIO_Port, SPI2_NSS_Pin, GPIO_PIN_SET);
 	spi_transaction(CMD_W_REGISTER, &x, 1);	//PWR_UP, PRX
@@ -42,7 +46,7 @@ uint8_t* rfm_receive(uint8_t size){
 
 
 //***PRIVATE FUNCIONS***//
-uint8_t* spi_transaction(uint8_t cmd, uint8_t* data, uint8_t size){
+static uint8_t* spi_transaction(uint8_t cmd, uint8_t* data, uint8_t size){
 	uint8_t rx[size+1];
 	uint8_t tx[size+1];
 	uint8_t i = 0;
@@ -53,7 +57,7 @@ uint8_t* spi_transaction(uint8_t cmd, uint8_t* data, uint8_t size){
 	}
 
 	HAL_GPIO_WritePin(SPI2_NSS_GPIO_Port, SPI2_NSS_Pin, GPIO_PIN_RESET);
-	HAL_SPI_TransmitReceive(&hspi2, tx, rx, size+1, 100);
+	HAL_SPI_TransmitReceive(&hspi_rfm, tx, rx, size+1, 100);
 	HAL_GPIO_WritePin(SPI2_NSS_GPIO_Port, SPI2_NSS_Pin, GPIO_PIN_SET);
 	return *rx;
 }
