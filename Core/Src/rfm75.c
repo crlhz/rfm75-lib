@@ -42,6 +42,21 @@ uint8_t* rfm_receive(uint8_t size){
 	uint8_t tx[size];	//in receiving mode MOSI data is meaningless
 	return spi_transaction(CMD_R_RX_PAYLOAD, tx, size);
 }
+
+uint8_t rfm_read_register(uint8_t address){
+	uint8_t tx;
+	uint8_t rx;
+	rx = *spi_transaction(CMD_R_REGISTER | address, &tx, 1);
+	return rx;
+}
+
+void rfm_mask_rx(uint8_t on){
+	uint8_t config = rfm_read_register(B0_CONFIG);
+	on = on & 0b01000000;
+	config = config | on;
+	spi_transaction(CMD_W_REGISTER | B0_CONFIG, &config, 1);
+}
+
 //**********************//
 
 

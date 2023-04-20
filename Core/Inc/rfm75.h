@@ -88,6 +88,8 @@ void rfm_transmit(uint8_t* data, uint8_t size);
 //receive data
 uint8_t* rfm_receive(uint8_t size);
 
+uint8_t rfm_read_register(uint8_t address);
+
 //mask interrupt caused by RX_DR
 //0->interrupt not masked, 1->interrupt masked
 void rfm_mask_rx(uint8_t on);
