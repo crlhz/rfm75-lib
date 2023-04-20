@@ -106,7 +106,7 @@ void rfm_enable_crc(uint8_t on);
 
 //crc encoding scheme
 //available values: 1 / 2 (bytes)
-void rfm_crc_scheme(uint8_t n);
+void rfm_set_crc_scheme(uint8_t n);
 
 //rfm module power on
 void rfm_power_on();
@@ -120,7 +120,7 @@ void rfm_mode(uint8_t mode);
 
 //enable "auto acknowledgement" function in specific pipe
 //available values: 0 - 5 (pipe)
-void rfm_auto_aa(uint8_t pipe);
+void rfm_set_auto_aa(uint8_t pipe);
 
 //enabled rx address
 //available values: 0 - 5 (pipe)
@@ -128,23 +128,23 @@ void rfm_enable_pipe(uint8_t pipe);
 
 //set RX/TX address field width
 //available values: 3 - 5 (bytes)
-void rfm_address_width(uint8_t width);
+void rfm_set_addr_width(uint8_t width);
 
 //set auto retransmission delay
 //available values: 250 - 4000 (us)
-void rfm_ret_delay(uint16_t delay);
+void rfm_set_ret_delay(uint16_t delay);
 
 //set auto retransmission count
 //available values: 0 - 15 (number of retransmission)
-void rfm_ret_count(uint8_t n);
+void rfm_set_ret_count(uint8_t n);
 
 //set frequency channel
 //available values: ?
-void rfm_freq_channel(uint16_t n);
+void rfm_set_freq_channel(uint16_t n);
 
 //set air data rate
 //available values: 250, 1000, 2000 (Mbps)
-void rfm_air_dr(uint16_t rate);
+void rfm_set_air_dr(uint16_t rate);
 
 //force pll lock signal
 //0->unlocked, 1->locked
@@ -152,19 +152,51 @@ void rfm_pll_lock(uint8_t on);
 
 //set rf output power in TX mode
 //available values: ?
-void rfm_tx_pwr(uint8_t pwr);
+void rfm_set_tx_pwr(uint8_t pwr);
 
 //set lna gain
 //0->low gain, 1->high gain
-void rfm_lna_gain(uint8_t mode);
+void rfm_set_lna_gain(uint8_t mode);
 
+//set receive address for pipe 0 or 1
+void rfm_set_rxcore_addr(uint8_t pipe, uint8_t* address);
 
+//set receive address for pipes 2-5
+void rfm_set_rx_addr(uint8_t pipe, uint8_t address);
 
+//set transmit address
+void rfm_set_tx_addr(uint8_t* address);
+
+//set size of rx payload in specific pipe
+void rfm_set_rx_size(uint8_t pipe, uint8_t size);
+
+//enable dynamic payload length for specific pipe
+//0->off, 1->on
+void rfm_set_dyn_payload(uint8_t pipe, uint8_t on);
+
+//flush TX
+void rfm_flush_tx();
+
+//flush RX
+void rfm_flush_rx();
+
+//reuse last transmitted payload
+void rfm_reuse_tx();
 
 //read bank selection state
 uint8_t rfm_read_rbank();
 
+//data pipe number for the payload available for reading the RX_FIFO
+uint8_t rfm_pipe_avlb();
 
+//TX_FIFO full flag
+uint8_t rfm_tx_fifo_full();
+
+//read chip ID
+uint8_t* rfm_read_id();
+
+//read status
+uint8_t rfm_read_status();
 
 
 #endif /* INC_RFM75_H_ */
