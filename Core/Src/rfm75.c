@@ -143,7 +143,6 @@ void rfm_set_air_dr(uint16_t rate){
 			reg |= 0b00100000;
 			break;
 		case 1000:
-			reg |= 0b0000000
 	}
 }
 
