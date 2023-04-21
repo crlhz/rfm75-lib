@@ -118,7 +118,7 @@ void rfm_power_off();
 
 //RX/TX control
 //0->PTX, 1-> PRX
-void rfm_mode(uint8_t mode);
+void rfm_set_mode(uint8_t mode);
 
 //enable "auto acknowledgement" function in specific pipe
 //available values: 0 - 5 (pipe)
