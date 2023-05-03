@@ -86,9 +86,13 @@ void rfm_init(SPI_HandleTypeDef *hspi);
 void rfm_transmit(uint8_t* data, uint8_t size);
 
 //receive data
-uint8_t* rfm_receive(uint8_t size);
+//('size' should be one larger than the actual rx size)
+//rx[0] is always status data
+void rfm_receive(uint8_t* rx, uint8_t size);
 
 uint8_t rfm_read_register(uint8_t address);
+
+void rfm_write_register(uint8_t address, uint8_t data);
 
 //mask interrupt caused by RX_DR
 //0->interrupt not masked, 1->interrupt masked
