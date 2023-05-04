@@ -178,10 +178,121 @@ void rfm_set_freq_channel(uint16_t n){
 
 }
 
-void rfm_set_air_dr(uint16_t rate){
+void rfm_set_air_dr(uint16_t rate){//OK
+	uint8_t reg = rfm_read_register(B0_RF_SETUP);
+	reg &= 0b11010000;	//reset values before OR
+
+	switch(rate){
+	case 250:
+		reg |= 0b00100000;
+		break;
+
+	case 1000:	//00->do nothing
+		break;
+
+	case 2000:
+		reg |= 0b00001000;
+		break;
+	}
+	uint8_t tx[] = {CMD_W_REGISTER | B0_RF_SETUP, reg};
+	uint8_t* rx;
+	spi_transaction(&tx, &rx, 2);
+}
+
+void rfm_pll_lock(uint8_t on){
 
 }
 
+void rfm_set_tx_pwr(uint8_t pwr){
+
+}
+
+void rfm_set_lna_gain(uint8_t mode){//OK
+	uint8_t reg = rfm_read_register(B0_RF_SETUP);
+	reg = (mode) ? (reg | 1) : (reg & ~(1));
+	uint8_t tx[] = {CMD_W_REGISTER | B0_RF_SETUP, reg};
+	uint8_t* rx;
+	spi_transaction(&tx, &rx, 2);
+}
+
+void rfm_set_rxcore_addr(uint8_t pipe, uint8_t* address){//OK
+	uint8_t tx[6];
+	uint8_t* rx;
+	uint8_t i = 0;
+	if(pipe == 0){
+		tx[0] = CMD_W_REGISTER | B0_RX_ADDR_P0;
+	}
+	if(pipe == 1){
+		tx[0] = CMD_W_REGISTER | B0_RX_ADDR_P1;
+	}
+
+	for(i=0;i<5;i++){
+		tx[i+1] = address[i];
+	}
+
+	spi_transaction(&tx, &rx, 6);
+}
+
+void rfm_set_rx_addr(uint8_t pipe, uint8_t address){//OK
+	uint8_t tx[] = {CMD_W_REGISTER | pipe + 10, address}; 	//RX_ADDR_P2->2+10
+	uint8_t* rx;
+	spi_transaction(&tx, &rx, 2);
+}
+
+void rfm_set_tx_addr(uint8_t* address){//OK
+	uint8_t tx[6];
+	uint8_t* rx;
+	uint8_t i = 0;
+	tx[0] = CMD_W_REGISTER | B0_TX_ADDR;
+
+	for(i=0;i<5;i++){
+		tx[i+1] = address[i];
+	}
+	spi_transaction(&tx, &rx, 6);
+}
+
+void rfm_set_rx_size(uint8_t pipe, uint8_t size){//OK
+	uint8_t tx[] = {CMD_W_REGISTER | pipe + 17, size};	//B0_RX_PW_P0->0+17
+	uint8_t* rx;
+	spi_transaction(&tx, &rx, 2);
+}
+
+void rfm_set_dyn_payload(uint8_t pipe, uint8_t on){//OK
+	uint8_t reg = rfm_read_register(B0_DYNPD);
+	reg = (on) ? (reg | (1 << pipe)) : (reg & ~(1 << pipe));
+	uint8_t tx[] = {CMD_W_REGISTER | B0_DYNPD, reg};
+	uint8_t* rx;
+	spi_transaction(&tx, &rx, 2);
+}
+
+void rfm_flush_tx(){//OK
+	uint8_t* tx = CMD_FLUSH_TX;
+	uint8_t* rx;
+	spi_transaction(&tx, &rx, 1);
+}
+
+void rfm_flush_rx(){//OK
+	uint8_t* tx = CMD_FLUSH_RX;
+	uint8_t* rx;
+	spi_transaction(&tx, &rx, 1);
+}
+
+void rfm_reuse_tx(){//OK
+	uint8_t* tx = CMD_REUSE_TX_PL;
+	uint8_t* rx;
+	spi_transaction(&tx, &rx, 1);
+}
+
+uint8_t rfm_read_rbank(){//OK
+	uint8_t* tx = CMD_R_REGISTER | B1_RBANK;
+	uint8_t rx[2];
+	spi_transaction(&tx, &rx, 2);
+	return rx[1];
+}
+
+uint8_t rfm_pipe_avlb(){
+
+}
 //**********************//
 
 

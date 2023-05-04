@@ -72,6 +72,7 @@
 #define B1_03			0x03
 #define B1_04			0x04
 #define B1_RSSI_EN		0x05
+#define B1_RBANK		0x07
 #define B1_CHIP_ID		0x08
 #define B1_0C			0x0C
 #define B1_NEW_FEATURE	0x0D
