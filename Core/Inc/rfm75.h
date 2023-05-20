@@ -190,20 +190,22 @@ void rfm_flush_rx();
 //reuse last transmitted payload
 void rfm_reuse_tx();
 
+//read chip ID
+void rfm_read_id(uint8_t* rx);
+
 //read bank selection state
 uint8_t rfm_read_rbank();
 
 //data pipe number for the payload available for reading the RX_FIFO
+//0-5->pipe number
+//6->not used
+//7->rx fifo empty
 uint8_t rfm_pipe_avlb();
 
 //TX_FIFO full flag
+//0->available locations in TX FIFO
+//1->TX FIFO full
 uint8_t rfm_tx_fifo_full();
-
-//read chip ID
-uint8_t* rfm_read_id();
-
-//read status
-uint8_t rfm_read_status();
 
 
 #endif /* INC_RFM75_H_ */

@@ -19,6 +19,8 @@ static SPI_HandleTypeDef *hspi_rfm;
 
 //***PRIVATE FUNCION DECLARATIONS***//
 static void spi_transaction(uint8_t* tx, uint8_t* rx, uint8_t size);
+static void spi_bank_0();
+static void spi_bank_1();
 //**********************************//
 
 
@@ -283,16 +285,34 @@ void rfm_reuse_tx(){//OK
 	spi_transaction(&tx, &rx, 1);
 }
 
+void rfm_read_id(uint8_t* rx){//OK
+	uint8_t* tx = CMD_R_REGISTER | B1_CHIP_ID;
+	spi_bank_1();
+	spi_transaction(&tx, rx, 5);
+	spi_bank_0();
+}
+
 uint8_t rfm_read_rbank(){//OK
-	uint8_t* tx = CMD_R_REGISTER | B1_RBANK;
+	uint8_t* tx = CMD_R_REGISTER | B0_STATUS;
 	uint8_t rx[2];
 	spi_transaction(&tx, &rx, 2);
-	return rx[1];
+	return rx[1] & 0b10000000;
 }
 
-uint8_t rfm_pipe_avlb(){
-
+uint8_t rfm_pipe_avlb(){//OK
+	uint8_t* tx = CMD_R_REGISTER | B0_STATUS;
+	uint8_t rx[2];
+	spi_transaction(&tx, &rx, 2);
+	return rx[1] & 0b00001110;
 }
+
+uint8_t rfm_tx_fifo_full(){//OK
+	uint8_t* tx = CMD_R_REGISTER | B0_STATUS;
+	uint8_t rx[2];
+	spi_transaction(&tx, &rx, 2);
+	return rx[1] & 0b00000001;
+}
+
 //**********************//
 
 
@@ -301,6 +321,28 @@ static void spi_transaction(uint8_t* tx, uint8_t* rx, uint8_t size){
 	HAL_GPIO_WritePin(SPI2_NSS_GPIO_Port, SPI2_NSS_Pin, GPIO_PIN_RESET);
 	HAL_SPI_TransmitReceive(&hspi2, tx, rx, size, 100);
 	HAL_GPIO_WritePin(SPI2_NSS_GPIO_Port, SPI2_NSS_Pin, GPIO_PIN_SET);
+}
+
+static void spi_bank_0(){
+	uint8_t* tx = CMD_R_REGISTER | B0_STATUS;
+	uint8_t rx[2];
+	spi_transaction(&tx, &rx, 2);
+
+	if(rx[1] & 0b10000000){
+		uint8_t txn[] = {CMD_ACTIVATE, 0x53};
+		spi_transaction(txn, rx, 2);
+	}
+}
+
+static void spi_bank_1(){
+	uint8_t* tx = CMD_R_REGISTER | B0_STATUS;
+	uint8_t rx[2];
+	spi_transaction(&tx, &rx, 2);
+
+	if(!(rx[1] & 0b10000000)){
+		uint8_t txn[] = {CMD_ACTIVATE, 0x53};
+		spi_transaction(txn, rx, 2);
+	}
 }
 //**********************//
 
