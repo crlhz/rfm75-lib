@@ -26,14 +26,13 @@ static void spi_bank_1();
 
 //***PUBLIC FUNCTIONS***//
 void rfm_init(SPI_HandleTypeDef *hspi){
-	//TODO
 	hspi_rfm = hspi;
-	uint8_t x = 0x03;
-	HAL_GPIO_WritePin(SPI2_NSS_GPIO_Port, SPI2_NSS_Pin, GPIO_PIN_SET);
-	spi_transaction(CMD_W_REGISTER, &x, 1);	//PWR_UP, PRX
+	//enter power down mode
+	rfm_power_off();
+	HAL_GPIO_WritePin(RFM_CE_GPIO_Port, RFM_CE_Pin, GPIO_PIN_RESET);
 }
 
-
+//TODO: odroznic transmit mode od zapisu rejestru transmit
 void rfm_transmit(uint8_t* data, uint8_t size){
 	uint8_t rx[size+1];
 	uint8_t tx[size+1];
@@ -50,6 +49,7 @@ void rfm_transmit(uint8_t* data, uint8_t size){
 	spi_transaction(CMD_W_TX_PAYLOAD, data, size);
 }
 
+//TODO: odroznic receive mode od odczytu rejestru receive
 void rfm_receive(uint8_t* rx, uint8_t size){//OK
 	uint8_t* tx = CMD_R_RX_PAYLOAD;
 	spi_transaction(&tx, &rx, size);
@@ -319,7 +319,7 @@ uint8_t rfm_tx_fifo_full(){//OK
 //***PRIVATE FUNCIONS***//
 static void spi_transaction(uint8_t* tx, uint8_t* rx, uint8_t size){
 	HAL_GPIO_WritePin(SPI2_NSS_GPIO_Port, SPI2_NSS_Pin, GPIO_PIN_RESET);
-	HAL_SPI_TransmitReceive(&hspi2, tx, rx, size, 100);
+	HAL_SPI_TransmitReceive(hspi_rfm, tx, rx, size, 100);
 	HAL_GPIO_WritePin(SPI2_NSS_GPIO_Port, SPI2_NSS_Pin, GPIO_PIN_SET);
 }
 

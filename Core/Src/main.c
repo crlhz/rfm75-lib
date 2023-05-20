@@ -98,18 +98,16 @@ int main(void)
   MX_USART2_UART_Init();
   MX_SPI2_Init();
   /* USER CODE BEGIN 2 */
-  uint8_t rx[] = {0, 0, 0, 0, 0};
-  uint8_t rx2=0;
   HAL_GPIO_WritePin(SPI2_NSS_GPIO_Port, SPI2_NSS_Pin, GPIO_PIN_SET);
-  HAL_Delay(500);
+  HAL_Delay(50);
+  rfm_init(&hspi2);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  rfm_read_id(rx);
-	  HAL_Delay(1000);
+
 	  /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
