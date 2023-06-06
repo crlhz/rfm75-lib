@@ -83,6 +83,16 @@
 //module initialization
 void rfm_init(SPI_HandleTypeDef *hspi);
 
+//enter TX mode
+//use when TX fifo isn't empty
+void rfm_tx_mode();
+
+//enter standby-I mode
+void rfm_standby();
+
+//enter RX mode
+void rfm_rx_mode();
+
 //transmit data
 void rfm_transmit(uint8_t* data, uint8_t size);
 

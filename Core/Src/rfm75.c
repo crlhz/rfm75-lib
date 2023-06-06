@@ -32,7 +32,23 @@ void rfm_init(SPI_HandleTypeDef *hspi){
 	HAL_GPIO_WritePin(RFM_CE_GPIO_Port, RFM_CE_Pin, GPIO_PIN_RESET);
 }
 
-//TODO: odroznic transmit mode od zapisu rejestru transmit
+void rfm_standby(){
+	rfm_power_on();
+	HAL_GPIO_WritePin(RFM_CE_GPIO_Port, RFM_CE_Pin, GPIO_PIN_RESET);
+}
+
+void rfm_tx_mode(){
+	rfm_power_on();
+	rfm_set_mode(0);
+	HAL_GPIO_WritePin(RFM_CE_GPIO_Port, RFM_CE_Pin, GPIO_PIN_SET);
+}
+
+void rfm_rx_mode(){
+	rfm_power_on();
+	rfm_set_mode(1);
+	HAL_GPIO_WritePin(RFM_CE_GPIO_Port, RFM_CE_Pin, GPIO_PIN_SET);
+}
+
 void rfm_transmit(uint8_t* data, uint8_t size){
 	uint8_t rx[size+1];
 	uint8_t tx[size+1];
@@ -49,7 +65,6 @@ void rfm_transmit(uint8_t* data, uint8_t size){
 	spi_transaction(CMD_W_TX_PAYLOAD, data, size);
 }
 
-//TODO: odroznic receive mode od odczytu rejestru receive
 void rfm_receive(uint8_t* rx, uint8_t size){//OK
 	uint8_t* tx = CMD_R_RX_PAYLOAD;
 	spi_transaction(&tx, &rx, size);
