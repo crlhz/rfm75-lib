@@ -58,11 +58,7 @@ void rfm_transmit(uint8_t* data, uint8_t size){
 	for(i=0;i<size+1;i++){
 		tx[i+1] = data[i];
 	}
-
-	//TODO
-	uint8_t x = 0x02;
-	spi_transaction(CMD_W_REGISTER, &x, 1);	//PWR_UP, PTX
-	spi_transaction(CMD_W_TX_PAYLOAD, data, size);
+	spi_transaction(&tx, &rx, size+1);
 }
 
 void rfm_receive(uint8_t* rx, uint8_t size){//OK
