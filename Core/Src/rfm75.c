@@ -303,6 +303,18 @@ void rfm_read_id(uint8_t* rx){//OK
 	spi_bank_0();
 }
 
+void rfm_disable_ack(){
+	uint8_t* tx = CMD_W_TX_PAYLOAD_NOACK;
+	uint8_t* rx;
+	spi_transaction(&tx, &rx, 1);
+}
+
+void rfm_activate(){
+	uint8_t tx[] = {CMD_ACTIVATE, 0x73};
+	uint8_t* rx;
+	spi_transaction(&tx, &rx, 2);
+}
+
 uint8_t rfm_read_rbank(){//OK
 	uint8_t* tx = CMD_R_REGISTER | B0_STATUS;
 	uint8_t rx[2];

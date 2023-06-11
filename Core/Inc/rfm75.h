@@ -203,6 +203,12 @@ void rfm_reuse_tx();
 //read chip ID
 void rfm_read_id(uint8_t* rx);
 
+//disables AUTOACK on this specific packet
+void rfm_disable_ack();
+
+//activates features
+void rfm_activate();
+
 //read bank selection state
 uint8_t rfm_read_rbank();
 

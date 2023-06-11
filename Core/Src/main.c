@@ -109,40 +109,26 @@ int main(void)
   rfm_init(&hspi2);
   rfm_standby();
   HAL_Delay(100);
-  rfm_transmit(tx, size);
+  test = rfm_read_register(0x1D);
+  rfm_write_register(0x01, 0x00);
+  //cant activate features
+  //change transmit to transmit with no ack
+  rfm_write_register(0x07, 0b00101110);
+  rfm_activate();
+  test = rfm_read_register(0x1D);
   rfm_tx_mode();
   rfm_flush_tx();
   rfm_transmit(tx, size);
 
+  HAL_Delay(100);
+  rfm_standby();
+  test = rfm_read_register(0x17);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  //Problem w tym, że prawidłowo wpisuję dane do TX fifo
-	  //ale nie są one wysyłane. Poniżej prawdobopodne
-	  //rozwiązanie.
-
-//	  "If the auto retransmit is enabled (EN_AA=1)
-//	  and auto acknowledge is required
-//	  (NO_ACK=0), the PTX device will enter TX
-//	  mode from standby-I mode when ARD
-//	  elapsed and number of retried is less than
-//	  ARC.
-//	  The PTX can set the NO_ACK flag bit in the
-//	  Packet Control Field with the command:
-//	  W_TX_PAYLOAD_NOACK. However, the
-//	  function must first be enabled in the
-//	  FEATURE register by setting the
-//	  Page 10 of 27
-//	  RFM75 V1.0
-//	  E‐mail:sales@hoperf.com                 website://www.hoperf.com
-//	  EN_DYN_ACK bit. When you use this option,
-//	  the PTX goes directly to standby-I mode after
-//	  transmitting the packet and the PRX does not
-//	  transmit an ACK packet when it receives the
-//	  packet."
 
 	  test = rfm_read_register(0x017);
     /* USER CODE END WHILE */
