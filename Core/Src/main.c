@@ -108,21 +108,7 @@ int main(void)
   HAL_Delay(50);
   rfm_init(&hspi2);
   rfm_standby();
-  HAL_Delay(100);
-  test = rfm_read_register(0x1D);
-  rfm_write_register(0x01, 0x00);
-  //cant activate features
-  //change transmit to transmit with no ack
-  rfm_write_register(0x07, 0b00101110);
-  rfm_activate();
-  test = rfm_read_register(0x1D);
-  rfm_tx_mode();
-  rfm_flush_tx();
-  rfm_transmit(tx, size);
-
-  HAL_Delay(100);
-  rfm_standby();
-  test = rfm_read_register(0x17);
+  rfm_rx_mode();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -130,7 +116,6 @@ int main(void)
   while (1)
   {
 
-	  test = rfm_read_register(0x017);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
